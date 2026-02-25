@@ -1,0 +1,286 @@
+qridaba-platform/
+├── src/main/java/com/qridaba/
+│   ├── QridabaApplication.java
+│   ├── config/
+│   │   ├── security/
+│   │   │   ├── SecurityConfig.java
+│   │   │   ├── JwtConfig.java
+│   │   │   ├── OAuth2Config.java
+│   │   │   ├── CorsConfig.java
+│   │   │   └── RateLimitingConfig.java
+│   │   ├── database/
+│   │   │   ├── AuditingConfig.java
+│   │   │   └── FlywayConfig.java
+│   │   ├── cache/
+│   │   │   └── RedisConfig.java
+│   │   ├── i18n/
+│   │   │   └── MessageSourceConfig.java
+│   │   ├── email/
+│   │   │   └── EmailConfig.java
+│   │   ├── payment/
+│   │   │   └── StripeConfig.java
+│   │   └── file/
+│   │       └── FileStorageConfig.java
+│   ├── controller/
+│   │   └── api/v1/
+│   │       ├── auth/
+│   │       │   ├── AuthController.java
+│   │       │   ├── OAuth2Controller.java
+│   │       │   └── SocialAuthController.java
+│   │       ├── equipment/
+│   │       │   ├── EquipmentController.java
+│   │       │   ├── CategoryController.java
+│   │       │   └── ReviewController.java
+│   │       ├── rental/
+│   │       │   ├── RentalController.java
+│   │       │   └── ReservationController.java
+│   │       ├── payment/
+│   │       │   ├── PaymentController.java
+│   │       │   └── TransactionController.java
+│   │       ├── user/
+│   │       │   ├── ProfileController.java
+│   │       │   └── NotificationController.java
+│   │       ├── search/
+│   │       │   └── SearchController.java
+│   │       ├── chat/
+│   │       │   └── ChatController.java
+│   │       └── admin/
+│   │           ├── DashboardController.java
+│   │           └── ReportController.java
+│   ├── service/
+│   │   ├── auth/
+│   │   │   ├── AuthenticationService.java
+│   │   │   ├── JwtService.java
+│   │   │   ├── OAuth2Service.java
+│   │   │   └── impl/
+│   │   │       ├── GoogleOAuth2Service.java
+│   │   │       ├── FacebookOAuth2Service.java
+│   │   │       ├── GithubOAuth2Service.java
+│   │   │       └── UserDetailsServiceImpl.java
+│   │   ├── equipment/
+│   │   │   ├── EquipmentService.java
+│   │   │   ├── CategoryService.java
+│   │   │   └── ReviewService.java
+│   │   ├── rental/
+│   │   │   ├── RentalService.java
+│   │   │   ├── ReservationService.java
+│   │   │   └── AvailabilityService.java
+│   │   ├── payment/
+│   │   │   ├── PaymentService.java
+│   │   │   └── TransactionService.java
+│   │   ├── user/
+│   │   │   ├── UserService.java
+│   │   │   └── NotificationService.java
+│   │   ├── search/
+│   │   │   └── SearchService.java
+│   │   ├── chat/
+│   │   │   └── ChatService.java
+│   │   ├── file/
+│   │   │   └── FileStorageService.java
+│   │   ├── email/
+│   │   │   └── EmailService.java
+│   │   └── scheduler/
+│   │       └── RentalSchedulerService.java
+│   ├── repository/
+│   │   ├── UserRepository.java
+│   │   ├── EquipmentRepository.java
+│   │   ├── CategoryRepository.java
+│   │   ├── RentalRepository.java
+│   │   ├── ReservationRepository.java
+│   │   ├── PaymentRepository.java
+│   │   ├── TransactionRepository.java
+│   │   ├── ReviewRepository.java
+│   │   ├── NotificationRepository.java
+│   │   └── ChatRepository.java
+│   ├── model/
+│   │   ├── entity/
+│   │   │   ├── BaseEntity.java
+│   │   │   ├── user/
+│   │   │   │   ├── User.java
+│   │   │   │   ├── OAuth2User.java
+│   │   │   │   ├── UserProfile.java
+│   │   │   │   └── RefreshToken.java
+│   │   │   ├── equipment/
+│   │   │   │   ├── Equipment.java
+│   │   │   │   ├── EquipmentImage.java
+│   │   │   │   ├── Category.java
+│   │   │   │   ├── EquipmentFeature.java
+│   │   │   │   └── Review.java
+│   │   │   ├── rental/
+│   │   │   │   ├── Rental.java
+│   │   │   │   ├── Reservation.java
+│   │   │   │   ├── RentalCalendar.java
+│   │   │   │   └── Insurance.java
+│   │   │   ├── payment/
+│   │   │   │   ├── Payment.java
+│   │   │   │   ├── Transaction.java
+│   │   │   │   └── PaymentMethod.java
+│   │   │   ├── chat/
+│   │   │   │   ├── ChatRoom.java
+│   │   │   │   ├── ChatMessage.java
+│   │   │   │   └── ChatParticipant.java
+│   │   │   └── notification/
+│   │   │       ├── Notification.java
+│   │   │       └── NotificationPreference.java
+│   │   ├── dto/
+│   │   │   ├── request/
+│   │   │   │   ├── auth/
+│   │   │   │   │   ├── LoginRequest.java
+│   │   │   │   │   ├── RegisterRequest.java
+│   │   │   │   │   ├── SocialLoginRequest.java
+│   │   │   │   │   └── RefreshTokenRequest.java
+│   │   │   │   ├── equipment/
+│   │   │   │   │   ├── EquipmentRequest.java
+│   │   │   │   │   ├── EquipmentFilterRequest.java
+│   │   │   │   │   ├── ReviewRequest.java
+│   │   │   │   │   └── CategoryRequest.java
+│   │   │   │   ├── rental/
+│   │   │   │   │   ├── RentalRequest.java
+│   │   │   │   │   ├── ReservationRequest.java
+│   │   │   │   │   └── RentalStatusUpdateRequest.java
+│   │   │   │   ├── payment/
+│   │   │   │   │   ├── PaymentRequest.java
+│   │   │   │   │   ├── CreatePaymentIntentRequest.java
+│   │   │   │   │   └── RefundRequest.java
+│   │   │   │   ├── user/
+│   │   │   │   │   ├── ProfileUpdateRequest.java
+│   │   │   │   │   └── ChangePasswordRequest.java
+│   │   │   │   └── chat/
+│   │   │   │       ├── ChatMessageRequest.java
+│   │   │   │       └── CreateChatRoomRequest.java
+│   │   │   └── response/
+│   │   │       ├── auth/
+│   │   │       │   ├── AuthResponse.java
+│   │   │       │   └── UserResponse.java
+│   │   │       ├── equipment/
+│   │   │       │   ├── EquipmentResponse.java
+│   │   │       │   ├── EquipmentDetailResponse.java
+│   │   │       │   └── ReviewResponse.java
+│   │   │       ├── rental/
+│   │   │       │   ├── RentalResponse.java
+│   │   │       │   ├── ReservationResponse.java
+│   │   │       │   └── RentalCalendarResponse.java
+│   │   │       ├── payment/
+│   │   │       │   ├── PaymentResponse.java
+│   │   │       │   └── TransactionResponse.java
+│   │   │       ├── search/
+│   │   │       │   └── SearchResponse.java
+│   │   │       └── chat/
+│   │   │           ├── ChatRoomResponse.java
+│   │   │           └── ChatMessageResponse.java
+│   │   ├── enums/
+│   │   │   ├── UserRole.java
+│   │   │   ├── UserStatus.java
+│   │   │   ├── AuthProvider.java
+│   │   │   ├── EquipmentStatus.java
+│   │   │   ├── EquipmentType.java
+│   │   │   ├── RentalStatus.java
+│   │   │   ├── PaymentStatus.java
+│   │   │   ├── PaymentMethod.java
+│   │   │   ├── TransactionType.java
+│   │   │   ├── NotificationType.java
+│   │   │   ├── NotificationStatus.java
+│   │   │   └── ChatMessageStatus.java
+│   │   └── mapper/
+│   │       ├── UserMapper.java
+│   │       ├── EquipmentMapper.java
+│   │       ├── RentalMapper.java
+│   │       ├── PaymentMapper.java
+│   │       └── ChatMapper.java
+│   ├── security/
+│   │   ├── filter/
+│   │   │   └── JwtAuthenticationFilter.java
+│   │   └── oauth2/
+│   │       ├── CustomOAuth2UserService.java
+│   │       ├── OAuth2AuthenticationSuccessHandler.java
+│   │       └── OAuth2AuthenticationFailureHandler.java
+│   ├── exception/
+│   │   ├── AuthenticationException.java
+│   │   ├── EquipmentNotFoundException.java
+│   │   ├── RentalNotAvailableException.java
+│   │   ├── PaymentFailedException.java
+│   │   └── UserNotVerifiedException.java
+│   ├── event/
+│   │   ├── RentalCreatedEvent.java
+│   │   ├── PaymentCompletedEvent.java
+│   │   └── EquipmentReservedEvent.java
+│   ├── listener/
+│   │   ├── RentalEventListener.java
+│   │   ├── PaymentEventListener.java
+│   │   └── UserEventListener.java
+│   ├── scheduler/
+│   │   └── RentalExpirationScheduler.java
+│   ├── messaging/
+│   │   └── WebSocketConfig.java
+│   └── util/
+│       ├── DateUtils.java
+│       ├── PriceCalculator.java
+│       ├── DistanceCalculator.java
+│       └── FileUtils.java
+├── src/main/resources/
+│   ├── application.yml
+│   ├── application-dev.yml
+│   ├── application-prod.yml
+│   ├── application-test.yml
+│   ├── db/migration/
+│   │   ├── V1__initial_schema.sql
+│   │   ├── V2__add_user_verification.sql
+│   │   ├── V3__add_payment_tables.sql
+│   │   └── V4__add_chat_tables.sql
+│   ├── i18n/
+│   │   ├── messages.properties
+│   │   ├── messages_fr.properties
+│   │   ├── messages_ar.properties
+│   │   └── messages_en.properties
+│   ├── templates/
+│   │   ├── email/
+│   │   │   ├── welcome-email.html
+│   │   │   ├── rental-confirmation.html
+│   │   │   └── payment-receipt.html
+│   │   └── pdf/
+│   │       └── rental-contract.ftl
+│   └── static/
+│       └── images/default-equipment.jpg
+├── src/test/
+│   ├── java/com/qridaba/
+│   │   ├── integration/
+│   │   │   ├── AuthenticationIntegrationTest.java
+│   │   │   ├── EquipmentIntegrationTest.java
+│   │   │   └── RentalIntegrationTest.java
+│   │   └── unit/
+│   │       ├── service/
+│   │       │   ├── AuthenticationServiceTest.java
+│   │       │   └── EquipmentServiceTest.java
+│   │       └── controller/
+│   │           ├── EquipmentControllerTest.java
+│   │           └── RentalControllerTest.java
+│   └── resources/
+│       └── application-test.yml
+├── docker/
+│   ├── docker-compose.yml
+│   ├── docker-compose.dev.yml
+│   ├── docker-compose.prod.yml
+│   ├── Dockerfile
+│   ├── Dockerfile.dev
+│   └── Dockerfile.prod
+├── .github/workflows/
+│   ├── ci.yml
+│   ├── cd.yml
+│   └── security-scan.yml
+├── scripts/
+│   ├── deploy.sh
+│   ├── backup-database.sh
+│   └── health-check.sh
+├── docs/
+│   ├── api/
+│   │   └── swagger.yaml
+│   ├── architecture/
+│   │   └── system-architecture.md
+│   └── deployment/
+│       └── production-checklist.md
+├── .env.example
+├── .gitignore
+├── pom.xml
+├── README.md
+└── CHANGELOG.md
+

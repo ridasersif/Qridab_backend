@@ -1,0 +1,100 @@
+﻿app-1  | c; display: inline-block;'>300646</div>    <p style=3D'font-size: 14px; col=
+app-1  | or: #b2bec3;'>This code will expire in 15 minutes for your security.</p>  <=
+app-1  | /div>  <div style=3D'margin-top: 30px; border-top: 1px solid #eee; padding-=
+app-1  | top: 20px; text-align: center; color: #b2bec3; font-size: 12px;'>    <p>&co=
+app-1  | py; 2025 Qridaba Platform. All rights reserved.</p>  </div></div>
+app-1  | ------=_Part_1_817487549.1770409927017--
+app-1  | 
+app-1  | ------=_Part_0_858813375.1770409927012--
+app-1  | .
+app-1  | 250 2.0.0 OK  1770409928 5b1f17b1804b1-48317d345c2sm202382475e9.6 - gsmtp
+app-1  | DEBUG SMTP: message successfully delivered to mail server
+app-1  | QUIT
+app-1  | 221 2.0.0 closing connection 5b1f17b1804b1-48317d345c2sm202382475e9.6 - gsmtp
+app-1  | 2026-02-06T20:32:09.026Z  INFO 1 --- [qridaba_backend] [0.0-8080-exec-1] c.q.q.service.mail.MailService           : Verification email sent to ridasersif1@gmail.com with code: 300646
+app-1  | 2026-02-06T20:32:29.682Z DEBUG 1 --- [qridaba_backend] [0.0-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/auth/verify-email
+app-1  | 2026-02-06T20:32:29.683Z DEBUG 1 --- [qridaba_backend] [0.0-8080-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+app-1  | 2026-02-06T20:32:29.686Z DEBUG 1 --- [qridaba_backend] [0.0-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/auth/verify-email
+app-1  | Hibernate: select pu1_0.id,pu1_0.created_at,pu1_0.email,pu1_0.expires_at,pu1_0.first_name,pu1_0.last_name,pu1_0.password,pu1_0.verification_code from pending_users pu1_0 where pu1_0.email=? and pu1_0.verification_code=?
+app-1  | 2026-02-06T20:32:56.598Z DEBUG 1 --- [qridaba_backend] [0.0-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/auth/verify-email
+app-1  | 2026-02-06T20:32:56.600Z DEBUG 1 --- [qridaba_backend] [0.0-8080-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+app-1  | 2026-02-06T20:32:56.602Z DEBUG 1 --- [qridaba_backend] [0.0-8080-exec-4] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/auth/verify-email
+app-1  | Hibernate: select pu1_0.id,pu1_0.created_at,pu1_0.email,pu1_0.expires_at,pu1_0.first_name,pu1_0.last_name,pu1_0.password,pu1_0.verification_code from pending_users pu1_0 where pu1_0.email=? and pu1_0.verification_code=?
+app-1  | Hibernate: select r1_0.id,r1_0.created_at,r1_0.created_by,r1_0.deleted,r1_0.deleted_at,r1_0.last_modified_by,r1_0.name,r1_0.updated_at,r1_0.version from roles r1_0 where r1_0.name=?
+app-1  | 2026-02-06T20:35:14.157Z  INFO 1 --- [qridaba_backend] [ionShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+app-1  | 2026-02-06T20:35:14.164Z  INFO 1 --- [qridaba_backend] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+app-1  | 2026-02-06T20:35:14.209Z  INFO 1 --- [qridaba_backend] [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+app-1  | 2026-02-06T20:35:14.214Z  INFO 1 --- [qridaba_backend] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+app-1  | 2026-02-06T20:35:14.227Z  INFO 1 --- [qridaba_backend] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+app-1  | 
+app-1  |   .   ____          _            __ _ _
+app-1  |  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+app-1  | ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+app-1  |  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+app-1  |   '  |____| .__|_| |_|_| |_\__, | / / / /
+app-1  |  =========|_|==============|___/=/_/_/_/
+app-1  | 
+app-1  |  :: Spring Boot ::                (v3.4.0)
+app-1  | 
+app-1  | 2026-02-06T20:35:17.241Z  INFO 1 --- [qridaba_backend] [           main] c.q.q.QridabaBackendApplication          : Starting QridabaBackendApplication v0.0.1-SNAPSHOT using Java 21.0.10 with PID 1 (/app/app.jar started by root in /app)
+app-1  | 2026-02-06T20:35:17.243Z DEBUG 1 --- [qridaba_backend] [           main] c.q.q.QridabaBackendApplication          : Running with Spring Boot v3.4.0, Spring v6.2.0
+app-1  | 2026-02-06T20:35:17.245Z  INFO 1 --- [qridaba_backend] [           main] c.q.q.QridabaBackendApplication          : No active profile set, falling back to 1 default profile: "default"
+app-1  | 2026-02-06T20:35:19.802Z  INFO 1 --- [qridaba_backend] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+app-1  | 2026-02-06T20:35:19.805Z  INFO 1 --- [qridaba_backend] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+app-1  | 2026-02-06T20:35:20.056Z  INFO 1 --- [qridaba_backend] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 232 ms. Found 4 JPA repository interfaces.
+app-1  | 2026-02-06T20:35:20.089Z  INFO 1 --- [qridaba_backend] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+app-1  | 2026-02-06T20:35:20.092Z  INFO 1 --- [qridaba_backend] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+app-1  | 2026-02-06T20:35:20.127Z  INFO 1 --- [qridaba_backend] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.qridaba.qridabaplatform.repository.PendingUserRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+app-1  | 2026-02-06T20:35:20.128Z  INFO 1 --- [qridaba_backend] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.qridaba.qridabaplatform.repository.RefreshTokenRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+app-1  | 2026-02-06T20:35:20.132Z  INFO 1 --- [qridaba_backend] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.qridaba.qridabaplatform.repository.RoleRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+app-1  | 2026-02-06T20:35:20.134Z  INFO 1 --- [qridaba_backend] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.qridaba.qridabaplatform.repository.UserRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+app-1  | 2026-02-06T20:35:20.139Z  INFO 1 --- [qridaba_backend] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 20 ms. Found 0 Redis repository interfaces.
+app-1  | 2026-02-06T20:35:22.087Z  INFO 1 --- [qridaba_backend] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+app-1  | 2026-02-06T20:35:22.120Z  INFO 1 --- [qridaba_backend] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+app-1  | 2026-02-06T20:35:22.121Z  INFO 1 --- [qridaba_backend] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.33]
+app-1  | 2026-02-06T20:35:22.189Z  INFO 1 --- [qridaba_backend] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+app-1  | 2026-02-06T20:35:22.190Z  INFO 1 --- [qridaba_backend] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 4825 ms
+app-1  | 2026-02-06T20:35:22.733Z  INFO 1 --- [qridaba_backend] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+app-1  | 2026-02-06T20:35:22.831Z  INFO 1 --- [qridaba_backend] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.2.Final
+app-1  | 2026-02-06T20:35:22.894Z  INFO 1 --- [qridaba_backend] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+app-1  | 2026-02-06T20:35:23.352Z  INFO 1 --- [qridaba_backend] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+app-1  | 2026-02-06T20:35:23.394Z  INFO 1 --- [qridaba_backend] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+app-1  | 2026-02-06T20:35:23.754Z  INFO 1 --- [qridaba_backend] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@2a9565d7
+app-1  | 2026-02-06T20:35:23.757Z  INFO 1 --- [qridaba_backend] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+app-1  | 2026-02-06T20:35:23.831Z  WARN 1 --- [qridaba_backend] [           main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+app-1  | 2026-02-06T20:35:23.880Z  INFO 1 --- [qridaba_backend] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+app-1  | 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+app-1  | 	Database driver: undefined/unknown
+app-1  | 	Database version: 15.15
+app-1  | 	Autocommit mode: undefined/unknown
+app-1  | 	Isolation level: undefined/unknown
+app-1  | 	Minimum pool size: undefined/unknown
+app-1  | 	Maximum pool size: undefined/unknown
+app-1  | 2026-02-06T20:35:25.730Z  INFO 1 --- [qridaba_backend] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+app-1  | 2026-02-06T20:35:25.877Z  INFO 1 --- [qridaba_backend] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+app-1  | 2026-02-06T20:35:26.910Z  WARN 1 --- [qridaba_backend] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+app-1  | 2026-02-06T20:35:27.410Z DEBUG 1 --- [qridaba_backend] [           main] c.q.q.c.s.f.JwtAuthenticationFilter      : Filter 'jwtAuthenticationFilter' configured for use
+app-1  | 2026-02-06T20:35:27.655Z  INFO 1 --- [qridaba_backend] [           main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+app-1  | 2026-02-06T20:35:27.658Z  WARN 1 --- [qridaba_backend] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+app-1  | 2026-02-06T20:35:29.021Z  INFO 1 --- [qridaba_backend] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+app-1  | 2026-02-06T20:35:29.253Z DEBUG 1 --- [qridaba_backend] [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, JwtAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+app-1  | 2026-02-06T20:35:29.639Z  WARN 1 --- [qridaba_backend] [           main] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+app-1  | 2026-02-06T20:35:30.869Z  INFO 1 --- [qridaba_backend] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+app-1  | 2026-02-06T20:35:30.900Z  INFO 1 --- [qridaba_backend] [           main] c.q.q.QridabaBackendApplication          : Started QridabaBackendApplication in 14.678 seconds (process running for 15.884)
+app-1  | 2026-02-06T20:35:31.032Z  INFO 1 --- [qridaba_backend] [           main] c.q.q.config.database.DataInitializer    : Starting data initialization...
+app-1  | Hibernate: select r1_0.id,r1_0.created_at,r1_0.created_by,r1_0.deleted,r1_0.deleted_at,r1_0.last_modified_by,r1_0.name,r1_0.updated_at,r1_0.version from roles r1_0 where r1_0.name=?
+app-1  | Hibernate: select r1_0.id,r1_0.created_at,r1_0.created_by,r1_0.deleted,r1_0.deleted_at,r1_0.last_modified_by,r1_0.name,r1_0.updated_at,r1_0.version from roles r1_0 where r1_0.name=?
+app-1  | Hibernate: select r1_0.id,r1_0.created_at,r1_0.created_by,r1_0.deleted,r1_0.deleted_at,r1_0.last_modified_by,r1_0.name,r1_0.updated_at,r1_0.version from roles r1_0 where r1_0.name=?
+app-1  | Hibernate: select u1_0.id,u1_0.created_at,u1_0.created_by,u1_0.deleted,u1_0.deleted_at,u1_0.email,u1_0.enabled,u1_0.first_name,u1_0.last_modified_by,u1_0.last_name,u1_0.password,u1_0.profile_id,u1_0.reset_password_code,u1_0.reset_password_expires_at,u1_0.updated_at,u1_0.version from users u1_0 where u1_0.email=?
+app-1  | Hibernate: select r1_0.user_id,r1_1.id,r1_1.created_at,r1_1.created_by,r1_1.deleted,r1_1.deleted_at,r1_1.last_modified_by,r1_1.name,r1_1.updated_at,r1_1.version from user_roles r1_0 join roles r1_1 on r1_1.id=r1_0.role_id where r1_0.user_id=?
+app-1  | Hibernate: select u1_0.id,u1_0.created_at,u1_0.created_by,u1_0.deleted,u1_0.deleted_at,u1_0.email,u1_0.enabled,u1_0.first_name,u1_0.last_modified_by,u1_0.last_name,u1_0.password,u1_0.profile_id,u1_0.reset_password_code,u1_0.reset_password_expires_at,u1_0.updated_at,u1_0.version from users u1_0 where u1_0.email=?
+app-1  | Hibernate: select r1_0.user_id,r1_1.id,r1_1.created_at,r1_1.created_by,r1_1.deleted,r1_1.deleted_at,r1_1.last_modified_by,r1_1.name,r1_1.updated_at,r1_1.version from user_roles r1_0 join roles r1_1 on r1_1.id=r1_0.role_id where r1_0.user_id=?
+app-1  | 2026-02-06T20:35:31.495Z  INFO 1 --- [qridaba_backend] [           main] c.q.q.config.database.DataInitializer    : Data initialization completed.
+app-1  | 2026-02-06T20:35:59.942Z  INFO 1 --- [qridaba_backend] [0.0-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+app-1  | 2026-02-06T20:35:59.942Z  INFO 1 --- [qridaba_backend] [0.0-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+app-1  | 2026-02-06T20:35:59.945Z  INFO 1 --- [qridaba_backend] [0.0-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+app-1  | 2026-02-06T20:35:59.988Z DEBUG 1 --- [qridaba_backend] [0.0-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/auth/verify-email
+app-1  | 2026-02-06T20:36:00.017Z DEBUG 1 --- [qridaba_backend] [0.0-8080-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+app-1  | 2026-02-06T20:36:00.032Z DEBUG 1 --- [qridaba_backend] [0.0-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/auth/verify-email
+app-1  | Hibernate: select pu1_0.id,pu1_0.created_at,pu1_0.email,pu1_0.expires_at,pu1_0.first_name,pu1_0.last_name,pu1_0.password,pu1_0.verification_code from pending_users pu1_0 where pu1_0.email=? and pu1_0.verification_code=?
+app-1  | Hibernate: select r1_0.id,r1_0.created_at,r1_0.created_by,r1_0.deleted,r1_0.deleted_at,r1_0.last_modified_by,r1_0.name,r1_0.updated_at,r1_0.version from roles r1_0 where r1_0.name=?
