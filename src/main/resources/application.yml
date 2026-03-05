@@ -28,6 +28,13 @@ spring:
           writetimeout: 5000
         debug: true
 
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    use-root-path: true
+
 server:
   address: 0.0.0.0
 
