@@ -1,6 +1,7 @@
 package com.qridaba.qridabaplatform.model.entity.user;
 
 import com.qridaba.qridabaplatform.model.entity.BaseEntity;
+import com.qridaba.qridabaplatform.model.entity.item.Item;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -47,6 +49,12 @@ public class User extends BaseEntity implements UserDetails {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_id", referencedColumnName = "id")
     private UserProfile profile;
+
+    @OneToMany(mappedBy = "owner")
+    private List<Item> items;
+
+    @OneToMany(mappedBy = "user")
+    private List<Favorite> favorites;
 
     public void addRole(Role role) {
         this.roles.add(role);

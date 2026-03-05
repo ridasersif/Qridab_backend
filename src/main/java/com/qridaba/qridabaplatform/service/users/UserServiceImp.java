@@ -12,6 +12,7 @@ import com.qridaba.qridabaplatform.repository.RoleRepository;
 import com.qridaba.qridabaplatform.repository.UserRepository;
 import com.qridaba.qridabaplatform.util.PasswordGeneratorUtil;
 import com.qridaba.qridabaplatform.util.MailService;
+import com.qridaba.qridabaplatform.util.SecurityUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,10 +33,18 @@ public class UserServiceImp implements IUserService {
     private final RoleRepository roleRepository;
     private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
+    private final SecurityUtils securityUtils;
 
     @Override
-    public List<UserResponse> getAllUsers() {
+    public List<UserResponse> getAllUsersIncludingDeleted() {
         return userRepository.findAll().stream()
+                .map(userMapper::toResponse)
+                .toList();
+    }
+
+    @Override
+    public  List<UserResponse> getAllActiveUsers(){
+        return userRepository.findAllByDeletedFalse().stream()
                 .map(userMapper::toResponse)
                 .toList();
     }
@@ -70,10 +79,8 @@ public class UserServiceImp implements IUserService {
             throw new IllegalArgumentException("Veuillez sélectionner au moins un rôle pour l'utilisateur.");
         }
 
-        User creator = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        boolean isSuperAdmin = creator.getRoles().stream()
-                .anyMatch(r -> r.getName().equals("SUPER_ADMIN"));
+        User creator = securityUtils.getCurrentUser();
+        boolean isSuperAdmin = securityUtils.isSuperAdmin();
 
         Set<Role> rolesToAssign = new HashSet<>(roleRepository.findAllById(request.getRoleIds()));
 
@@ -115,7 +122,7 @@ public class UserServiceImp implements IUserService {
 
     @Override
     @Transactional
-    public String deleteUser(UUID id) {
+    public String hardDeleteUser(UUID id) {
         User creator = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         boolean isSuperAdmin = creator.getRoles().stream()
@@ -149,13 +156,49 @@ public class UserServiceImp implements IUserService {
         }
     }
 
+    @Override
+    @Transactional
+    public String softDeleteUser(UUID id) {
+        User creator = securityUtils.getCurrentUser();
+        boolean isSuperAdmin = securityUtils.isSuperAdmin();
+
+        User userToDelete = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("L'utilisateur avec l'ID " + id + " n'existe pas."));
+
+        boolean targetIsSuperAdmin = userToDelete.getRoles().stream()
+                .anyMatch(r -> r.getName().equals("SUPER_ADMIN"));
+
+        boolean targetIsAdmin = userToDelete.getRoles().stream()
+                .anyMatch(r -> r.getName().equals("ADMIN"));
+
+
+        if (targetIsSuperAdmin) {
+            throw new RoleNotAllowedException("Impossible de supprimer le compte SUPER_ADMIN.");
+        }
+
+
+        if (!isSuperAdmin && targetIsAdmin) {
+            throw new RoleNotAllowedException("Accès refusé : Un Admin ne peut pas supprimer un autre Admin.");
+        }
+
+        try {
+            userToDelete.softDelete();
+            userToDelete.setEnabled(false);
+            userRepository.save(userToDelete);
+            return "L'utilisateur " + userToDelete.getEmail() + " a été supprimé avec succès.";
+        } catch (Exception e) {
+
+            throw new RuntimeException("Erreur technique lors de la suppression : " + e.getMessage());
+        }
+    }
+
 
     @Override
     @Transactional
     public UserResponse toggleUserStatus(UUID id, boolean enabled) {
 
-        User creator = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        boolean isSuperAdmin = creator.getRoles().stream().anyMatch(r -> r.getName().equals("SUPER_ADMIN"));
+        User creator = securityUtils.getCurrentUser();
+        boolean isSuperAdmin = securityUtils.isSuperAdmin();
 
 
         User targetUser = userRepository.findById(id)
@@ -183,45 +226,59 @@ public class UserServiceImp implements IUserService {
     @Override
     @Transactional
     public UserResponse updateUserRoles(UUID id, List<UUID> roleIds) {
-        // 1. شكون اللي خدام دابا؟
-        User creator = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        boolean isSuperAdmin = creator.getRoles().stream().anyMatch(r -> r.getName().equals("SUPER_ADMIN"));
 
-        // 2. نجبدو الـ User المستهدف
+        User creator = securityUtils.getCurrentUser();
+        boolean isSuperAdmin = securityUtils.isSuperAdmin();
+
         User targetUser = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Utilisateur non trouvé."));
 
-        // 3. نجبدو الـ Roles الجداد اللي بغينا نعطيوه
+
         Set<Role> newRoles = new HashSet<>(roleRepository.findAllById(roleIds));
         if (newRoles.isEmpty()) {
             throw new IllegalArgumentException("Veuillez sélectionner au moins un rôle valide.");
         }
 
-        // --- الـ Security Logic ---
 
-        // أ- ممنوع تغيير Roles ديال الـ Super Admin
         if (targetUser.getRoles().stream().anyMatch(r -> r.getName().equals("SUPER_ADMIN"))) {
             throw new RoleNotAllowedException("Action interdite : Les rôles du Super Admin ne peuvent pas être modifiés.");
         }
 
-        // ب- الـ Admin العادي ممنوع عليه يعطي Role ديال ADMIN لشي حد
         if (!isSuperAdmin) {
             boolean hasAdminRole = newRoles.stream().anyMatch(r -> r.getName().equals("ADMIN") || r.getName().equals("SUPER_ADMIN"));
             if (hasAdminRole) {
                 throw new RoleNotAllowedException("Accès refusé : Vous n'avez لا تملك الصلاحية لتعيين دور Admin.");
             }
 
-            // ج- الـ Admin العادي ما يقدرش يغير Roles ديال Admin آخر
+
             if (targetUser.getRoles().stream().anyMatch(r -> r.getName().equals("ADMIN"))) {
                 throw new RoleNotAllowedException("Accès refusé : Vous ne pouvez pas modifier les rôles d'un autre Admin.");
             }
         }
 
-        // 4. حفظ التغييرات
+
         targetUser.setRoles(newRoles);
         User updatedUser = userRepository.save(targetUser);
 
         return userMapper.toResponse(updatedUser);
+    }
+
+    @Override
+    @Transactional
+    public UserResponse restoreUser(UUID id) {
+
+        if (!securityUtils.isSuperAdmin()) {
+            throw new RoleNotAllowedException("Accès refusé : Seul le Super Admin يمكنه استعادة الحسابات المحذوفة.");
+        }
+
+        User userToRestore = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur non trouvé."));
+
+        userToRestore.restore();
+        userToRestore.setEnabled(true);
+
+        User restoredUser = userRepository.save(userToRestore);
+        return userMapper.toResponse(restoredUser);
     }
     @Override
     public List<UserResponse> searchUsers(String query) {

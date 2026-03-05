@@ -15,16 +15,23 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/admin/users")
+@RequestMapping("/admin/users")
 @RequiredArgsConstructor
 @PreAuthorize("hasAnyAuthority('ADMIN','SUPER_ADMIN')")
 public class UserController {
 
     private final IUserService userService;
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<UserResponse>>> getAllUsers() {
-        return ResponseBuilder.success("Users fetched successfully", userService.getAllUsers());
+    @GetMapping("all")
+    @PreAuthorize("hasAnyAuthority('SUPER_ADMIN')")
+    public ResponseEntity<ApiResponse<List<UserResponse>>> getAllUsersIncludingDeleted() {
+        return ResponseBuilder.success("Users fetched successfully", userService.getAllUsersIncludingDeleted());
+    }
+
+    @GetMapping("active")
+    @PreAuthorize("hasAnyAuthority('ADMIN','SUPER_ADMIN')")
+    public ResponseEntity<ApiResponse<List<UserResponse>>> getAllActiveUsers() {
+        return ResponseBuilder.success("Users fetched successfully", userService.getAllActiveUsers());
     }
 
     @GetMapping("/role/{roleName}")
@@ -61,9 +68,20 @@ public class UserController {
         return ResponseBuilder.success("User roles updated successfully", response);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID id) {
-        userService.deleteUser(id);
+    @DeleteMapping("soft/{id}")
+    public ResponseEntity<ApiResponse<Void>> softdelete(@PathVariable UUID id) {
+        userService.softDeleteUser(id);
         return ResponseBuilder.success("User deleted successfully", null);
+    }
+    @DeleteMapping("hard/{id}")
+    public ResponseEntity<ApiResponse<Void>> harddelete(@PathVariable UUID id) {
+        userService.hardDeleteUser(id);
+        return ResponseBuilder.success("User deleted successfully", null);
+    }
+
+    @PatchMapping("/{id}/restore")
+    @PreAuthorize("hasAuthority('SUPER_ADMIN')")
+    public ResponseEntity<ApiResponse<UserResponse>> restore(@PathVariable UUID id) {
+        return ResponseBuilder.success("User restored successfully", userService.restoreUser(id));
     }
 }
