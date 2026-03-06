@@ -58,6 +58,7 @@ public class SecurityConfig {
                                                 .permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/api/v1/admin/roles/**").permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/api/v1/admin/categories/**").permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/api/v1/items/**").permitAll()
                                                 .anyRequest().authenticated())
                                 .sessionManagement(session -> session
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

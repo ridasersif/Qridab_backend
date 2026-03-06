@@ -89,6 +89,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(buildErrorResponse(ex, HttpStatus.BAD_REQUEST, request), HttpStatus.BAD_REQUEST);
     }
 
+    // === JSON Parse Error / Bad Request
+    @ExceptionHandler(org.springframework.http.converter.HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(org.springframework.http.converter.HttpMessageNotReadableException ex, WebRequest request) {
+        ErrorResponse errorResponse = buildErrorResponse(ex, HttpStatus.BAD_REQUEST, request);
+        errorResponse.setMessage("Malformed JSON request or invalid data format (e.g., invalid UUID)");
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
     // === General Exception
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex, WebRequest request) {
