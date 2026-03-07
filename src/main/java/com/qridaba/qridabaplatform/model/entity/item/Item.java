@@ -42,9 +42,11 @@ public class Item extends BaseEntity {
     @JoinColumn(name = "category_id")
     private Category category;
 
+    @Builder.Default
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemImage> images = new ArrayList<>();
 
+    @Builder.Default
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "item_tags",
             joinColumns = @JoinColumn(name = "item_id"),

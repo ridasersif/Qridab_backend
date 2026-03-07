@@ -48,13 +48,17 @@ public class SecurityConfig {
                                                                 "/test",
                                                                 "/api/v1/auth/register",
                                                                 "/api/v1/auth/**",
-                                                                "/v3/api-docs",
-                                                                "/v3/api-docs/**",
-                                                                "/swagger-ui/**",
-                                                                "/swagger-ui.html",
-                                                                "/swagger-resources/**",
-                                                                "/webjars/**",
-                                                                "/error")
+                                                                 "/v3/api-docs",
+                                                                 "/v3/api-docs/**",
+                                                                 "/api/v1/v3/api-docs",
+                                                                 "/api/v1/v3/api-docs/**",
+                                                                 "/swagger-ui/**",
+                                                                 "/api/v1/swagger-ui/**",
+                                                                 "/swagger-ui.html",
+                                                                 "/api/v1/swagger-ui.html",
+                                                                 "/swagger-resources/**",
+                                                                 "/webjars/**",
+                                                                 "/error")
                                                 .permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/api/v1/admin/roles/**").permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/api/v1/admin/categories/**").permitAll()

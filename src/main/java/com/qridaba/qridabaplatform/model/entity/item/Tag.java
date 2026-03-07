@@ -13,6 +13,7 @@ public class Tag extends BaseEntity {
     @Column(unique = true, nullable = false)
     private String name;
 
+    @Builder.Default
     @ManyToMany(mappedBy = "tags")
     private Set<Item> items = new HashSet<>();
 }

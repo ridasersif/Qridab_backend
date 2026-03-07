@@ -9,6 +9,7 @@ import lombok.*;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class ItemImage extends BaseEntity {
     private String imageUrl;
+    @Builder.Default
     private boolean isMain = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
