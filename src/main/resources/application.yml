@@ -1,6 +1,14 @@
 spring:
   application:
     name: qridaba_backend
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 20MB
+  web:
+    resources:
+      static-locations: file:/app/uploads/,classpath:/static/
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/qridaba_db}
     username: ${SPRING_DATASOURCE_USERNAME:qridaba_user}
@@ -57,3 +65,9 @@ logging:
         mail: TRACE
     jakarta:
       mail: DEBUG
+
+# File Storage Configuration
+app:
+  upload:
+    dir: ${UPLOAD_DIR:/app/uploads}
+    base-url: ${BASE_URL:http://localhost:8080}
