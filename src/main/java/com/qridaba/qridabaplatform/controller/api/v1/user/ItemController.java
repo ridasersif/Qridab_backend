@@ -6,14 +6,17 @@ import com.qridaba.qridabaplatform.payload.ApiResponse;
 import com.qridaba.qridabaplatform.payload.ResponseBuilder;
 import com.qridaba.qridabaplatform.service.item.IItemService;
 import com.qridaba.qridabaplatform.model.entity.user.User;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,21 +26,29 @@ import java.util.UUID;
 @RequestMapping("/items")
 @Tag(name = "Item Management", description = "Endpoints for managing items (Owner based)")
 public class ItemController {
- 
+
     private final IItemService itemService;
- 
-    @PostMapping
+    private final ObjectMapper objectMapper;
+
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('OWNER')")
-    @Operation(summary = "Create a new item", description = "Creates a new item and assigns the current authenticated user as the owner. Requires Owner authority.")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Create a new item", description = "Send as multipart/form-data: 'item' is a JSON string of the item data, 'images' are the image files (multiple allowed). First image becomes the main image.")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Item created successfully")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Invalid item data")
     public ResponseEntity<ApiResponse<ItemResponse>> createItem(
-            @Valid @RequestBody ItemRequest request,
+            @RequestParam("item") String itemJson,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images,
             @AuthenticationPrincipal User user) {
-        ItemResponse response = itemService.createItem(request, user.getId());
-        return ResponseBuilder.created("Item created successfully", response);
+        try { 
+            ItemRequest request = objectMapper.readValue(itemJson, ItemRequest.class);
+            ItemResponse response = itemService.createItem(request, user.getId(), images);
+            return ResponseBuilder.created("Item created successfully", response);
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid item JSON: " + e.getMessage());
+        }
     }
- 
+
     @GetMapping("/{id}")
     @Operation(summary = "Get item by ID", description = "Retrieves detailed information for a specific item by its unique identifier.")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Item fetched successfully")
@@ -45,21 +56,21 @@ public class ItemController {
     public ResponseEntity<ApiResponse<ItemResponse>> getItemById(@PathVariable UUID id) {
         return ResponseBuilder.success("Item fetched successfully", itemService.getItemById(id));
     }
- 
+
     @GetMapping
     @Operation(summary = "Get all items", description = "Retrieves a list of all publicly available items.")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Items fetched successfully")
     public ResponseEntity<ApiResponse<List<ItemResponse>>> getAllItems() {
         return ResponseBuilder.success("Items fetched successfully", itemService.getAllItems());
     }
- 
+
     @GetMapping("/search")
     @Operation(summary = "Search items by title", description = "Retrieves a list of items whose titles contain the specified search string.")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Items fetched successfully")
     public ResponseEntity<ApiResponse<List<ItemResponse>>> searchItems(@RequestParam String title) {
         return ResponseBuilder.success("Items fetched successfully", itemService.searchItemsByTitle(title));
     }
- 
+
     @GetMapping("/category/{categoryId}")
     @Operation(summary = "Get items by category", description = "Retrieves a list of items belonging to the specified category.")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Items fetched successfully")
@@ -67,20 +78,28 @@ public class ItemController {
     public ResponseEntity<ApiResponse<List<ItemResponse>>> getItemsByCategory(@PathVariable UUID categoryId) {
         return ResponseBuilder.success("Items fetched successfully", itemService.getItemsByCategory(categoryId));
     }
- 
-    @PutMapping("/{id}")
+
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('OWNER')")
-    @Operation(summary = "Update an existing item", description = "Updates the details of an existing item. The authenticated user must be the owner of the item. Requires Owner authority.")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Update an existing item", description = "Send as multipart/form-data: 'item' is a JSON string of the item data, 'images' are the new image files (optional, replaces all existing images). Requires Owner authority.")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Item updated successfully")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Access denied (user is not the owner)")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Item not found")
     public ResponseEntity<ApiResponse<ItemResponse>> updateItem(
             @PathVariable UUID id,
-            @Valid @RequestBody ItemRequest request,
+            @RequestParam("item") String itemJson,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images,
             @AuthenticationPrincipal User user) {
-        return ResponseBuilder.success("Item updated successfully", itemService.updateItem(id, request, user.getId()));
+        try {
+            ItemRequest request = objectMapper.readValue(itemJson, ItemRequest.class);
+            return ResponseBuilder.success("Item updated successfully",
+                    itemService.updateItem(id, request, user.getId(), images));
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid item JSON: " + e.getMessage());
+        }
     }
- 
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('OWNER')")
     @Operation(summary = "Delete an item", description = "Permanently removes an item. The authenticated user must be the owner of the item. Requires Owner authority.")

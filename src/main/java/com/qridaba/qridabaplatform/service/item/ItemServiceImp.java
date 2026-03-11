@@ -11,11 +11,14 @@ import com.qridaba.qridabaplatform.model.entity.user.User;
 import com.qridaba.qridabaplatform.repository.CategoryRepository;
 import com.qridaba.qridabaplatform.repository.ItemRepository;
 import com.qridaba.qridabaplatform.repository.UserRepository;
+import com.qridaba.qridabaplatform.service.storage.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -28,34 +31,51 @@ public class ItemServiceImp implements IItemService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final ItemMapper itemMapper;
+    private final FileStorageService fileStorageService;
 
     @Override
     @Transactional
-    public ItemResponse createItem(ItemRequest request, UUID ownerId) {
+    public ItemResponse createItem(ItemRequest request, UUID ownerId, List<MultipartFile> images) {
         User owner = userRepository.findById(ownerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Owner not found with ID: " + ownerId));
 
         Category category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + request.getCategoryId()));
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Category not found with ID: " + request.getCategoryId()));
 
         Item item = itemMapper.toEntity(request);
         item.setOwner(owner);
         item.setCategory(category);
 
-        if (request.getImageUrls() != null) {
-            List<ItemImage> images = request.getImageUrls().stream()
-                    .map(url -> ItemImage.builder()
+        List<ItemImage> itemImages = new ArrayList<>();
+
+        // Upload files if provided
+        if (images != null && !images.isEmpty()) {
+            for (int i = 0; i < images.size(); i++) {
+                MultipartFile file = images.get(i);
+                if (file != null && !file.isEmpty()) {
+                    String url = fileStorageService.storeFile(file, "items");
+                    itemImages.add(ItemImage.builder()
                             .imageUrl(url)
                             .item(item)
-                            .isMain(false) // Can be refined later
-                            .build())
-                    .collect(Collectors.toList());
-            if (!images.isEmpty()) {
-                images.get(0).setMain(true);
+                            .isMain(i == 0) // First image is main
+                            .build());
+                }
             }
-            item.setImages(images);
         }
 
+        // Also support passing URLs directly (backward compatibility)
+        if (request.getImageUrls() != null) {
+            for (int i = 0; i < request.getImageUrls().size(); i++) {
+                itemImages.add(ItemImage.builder()
+                        .imageUrl(request.getImageUrls().get(i))
+                        .item(item)
+                        .isMain(itemImages.isEmpty() && i == 0)
+                        .build());
+            }
+        }
+
+        item.setImages(itemImages);
         Item savedItem = itemRepository.save(item);
         return itemMapper.toResponse(savedItem);
     }
@@ -97,7 +117,7 @@ public class ItemServiceImp implements IItemService {
 
     @Override
     @Transactional
-    public ItemResponse updateItem(UUID id, ItemRequest request, UUID ownerId) {
+    public ItemResponse updateItem(UUID id, ItemRequest request, UUID ownerId, List<MultipartFile> images) {
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Item not found"));
 
@@ -106,25 +126,37 @@ public class ItemServiceImp implements IItemService {
         }
 
         Category category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + request.getCategoryId()));
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Category not found with ID: " + request.getCategoryId()));
 
         itemMapper.updateEntityFromRequest(request, item);
         item.setCategory(category);
 
-        // Update images (simplified: replace all)
-        if (request.getImageUrls() != null) {
+        // If new files uploaded, replace all images
+        if (images != null && !images.isEmpty()) {
+            // Delete old files from storage
+            item.getImages().forEach(img -> fileStorageService.deleteFile(img.getImageUrl()));
             item.getImages().clear();
-            List<ItemImage> images = request.getImageUrls().stream()
-                    .map(url -> ItemImage.builder()
+
+            for (int i = 0; i < images.size(); i++) {
+                MultipartFile file = images.get(i);
+                if (file != null && !file.isEmpty()) {
+                    String url = fileStorageService.storeFile(file, "items");
+                    item.getImages().add(ItemImage.builder()
                             .imageUrl(url)
                             .item(item)
-                            .isMain(false)
-                            .build())
-                    .collect(Collectors.toList());
-            if (!images.isEmpty()) {
-                images.get(0).setMain(true);
+                            .isMain(i == 0)
+                            .build());
+                }
             }
-            item.getImages().addAll(images);
+        } else if (request.getImageUrls() != null) {
+            item.getImages().clear();
+            List<ItemImage> newImages = request.getImageUrls().stream()
+                    .map(url -> ItemImage.builder().imageUrl(url).item(item).isMain(false).build())
+                    .collect(Collectors.toList());
+            if (!newImages.isEmpty())
+                newImages.get(0).setMain(true);
+            item.getImages().addAll(newImages);
         }
 
         Item updatedItem = itemRepository.save(item);
