@@ -4,6 +4,7 @@ import com.qridaba.qridabaplatform.exception.ResourceNotFoundException;
 import com.qridaba.qridabaplatform.mapper.ItemMapper;
 import com.qridaba.qridabaplatform.model.dto.request.ItemRequest;
 import com.qridaba.qridabaplatform.model.dto.response.ItemResponse;
+import com.qridaba.qridabaplatform.model.dto.response.PaginatedResponse;
 import com.qridaba.qridabaplatform.model.entity.item.Category;
 import com.qridaba.qridabaplatform.model.entity.item.Item;
 import com.qridaba.qridabaplatform.model.entity.item.ItemImage;
@@ -88,10 +89,24 @@ public class ItemServiceImp implements IItemService {
     }
 
     @Override
-    public List<ItemResponse> getAllItems() {
-        return itemRepository.findAll().stream()
-                .map(itemMapper::toResponse)
-                .collect(Collectors.toList());
+    public PaginatedResponse<ItemResponse> getAllItems(int pageNo, int pageSize, String sortBy, String sortDir) {
+        org.springframework.data.domain.Sort sort = sortDir.equalsIgnoreCase(org.springframework.data.domain.Sort.Direction.ASC.name()) ? 
+                org.springframework.data.domain.Sort.by(sortBy).ascending()
+                : org.springframework.data.domain.Sort.by(sortBy).descending();
+
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(pageNo, pageSize, sort);
+        org.springframework.data.domain.Page<Item> items = itemRepository.findAll(pageable);
+        List<ItemResponse> content = items.getContent().stream().map(itemMapper::toResponse).collect(Collectors.toList());
+
+        PaginatedResponse<ItemResponse> response = new PaginatedResponse<>();
+        response.setContent(content);
+        response.setPageNo(items.getNumber());
+        response.setPageSize(items.getSize());
+        response.setTotalElements(items.getTotalElements());
+        response.setTotalPages(items.getTotalPages());
+        response.setLast(items.isLast());
+
+        return response;
     }
 
     @Override
@@ -170,9 +185,19 @@ public class ItemServiceImp implements IItemService {
                 .orElseThrow(() -> new ResourceNotFoundException("Item not found"));
 
         if (!item.getOwner().getId().equals(ownerId)) {
-            throw new AccessDeniedException("You are not the owner of this item");
+            boolean isAdmin = userRepository.findById(ownerId)
+                    .map(u -> u.getRoles().stream().anyMatch(r -> r.getName().toUpperCase().contains("ADMIN")))
+                    .orElse(false);
+            
+            if (!isAdmin) {
+                throw new AccessDeniedException("You are not the owner of this item");
+            }
         }
 
-        itemRepository.delete(item);
+        try {
+            itemRepository.delete(item);
+        } catch (Exception e) {
+             throw new RuntimeException("Failed to delete item. It might be linked to existing bookings.", e);
+        }
     }
 }

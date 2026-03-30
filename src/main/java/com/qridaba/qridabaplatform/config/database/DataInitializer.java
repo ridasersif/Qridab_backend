@@ -4,7 +4,10 @@ import com.qridaba.qridabaplatform.model.entity.user.Role;
 import com.qridaba.qridabaplatform.model.entity.user.User;
 import com.qridaba.qridabaplatform.model.entity.user.UserProfile;
 import com.qridaba.qridabaplatform.model.entity.item.Category;
+import com.qridaba.qridabaplatform.model.entity.item.Item;
+import com.qridaba.qridabaplatform.model.entity.item.ItemImage;
 import com.qridaba.qridabaplatform.repository.CategoryRepository;
+import com.qridaba.qridabaplatform.repository.ItemRepository;
 import com.qridaba.qridabaplatform.repository.RoleRepository;
 import com.qridaba.qridabaplatform.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +30,7 @@ public class DataInitializer implements CommandLineRunner {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+    private final ItemRepository itemRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -36,6 +40,8 @@ public class DataInitializer implements CommandLineRunner {
         createRoles();
         createSuperAdmin();
         createAdmin();
+        createOwner();
+        createClient();
         createCategories();
         log.info("Data initialization completed.");
     }
@@ -104,25 +110,93 @@ public class DataInitializer implements CommandLineRunner {
         }
     }
 
+    private void createOwner() {
+        String email = "owner@gmail.com";
+        if (userRepository.findByEmail(email).isEmpty()) {
+            Role ownerRole = roleRepository.findByName("OWNER")
+                    .orElseThrow(() -> new RuntimeException("Role OWNER not found"));
+
+            User user = User.builder()
+                    .email(email)
+                    .password(passwordEncoder.encode("password123"))
+                    .firstName("Demo")
+                    .lastName("Owner")
+                    .enabled(true)
+                    .roles(Set.of(ownerRole))
+                    .build();
+
+            UserProfile profile = UserProfile.builder().build();
+            user.setProfile(profile);
+            profile.setUser(user);
+
+            userRepository.save(user);
+            log.info("Created Owner user: {}", email);
+        }
+    }
+
+    private void createClient() {
+        String email = "clinte@gmail.com";
+        if (userRepository.findByEmail(email).isEmpty()) {
+            Role clientRole = roleRepository.findByName("CLIENT")
+                    .orElseThrow(() -> new RuntimeException("Role CLIENT not found"));
+
+            User user = User.builder()
+                    .email(email)
+                    .password(passwordEncoder.encode("password123"))
+                    .firstName("Demo")
+                    .lastName("Client")
+                    .enabled(true)
+                    .roles(Set.of(clientRole))
+                    .build();
+
+            UserProfile profile = UserProfile.builder().build();
+            user.setProfile(profile);
+            profile.setUser(user);
+
+            userRepository.save(user);
+            log.info("Created Client user: {}", email);
+        }
+    }
+
     private void createCategories() {
         List<Category> categories = Arrays.asList(
-            Category.builder().name("Electronique").description("Smartphones, laptops, and gadgets").icon("pi pi-desktop").build(),
-            Category.builder().name("Mode & Accessoires").description("Clothing, shoes, and jewelry").icon("pi pi-shopping-bag").build(),
-            Category.builder().name("Maison & Jardin").description("Furniture, decor, and gardening tools").icon("pi pi-home").build(),
-            Category.builder().name("Beauté & Santé").description("Skincare, makeup, and wellness").icon("pi pi-heart").build(),
-            Category.builder().name("Sport & Loisirs").description("Gym equipment and outdoor gear").icon("pi pi-sun").build(),
-            Category.builder().name("Jouets & Enfants").description("Toys, games, and baby products").icon("pi pi-palette").build(),
-            Category.builder().name("Automobile & Moto").description("Vehicles and car parts").icon("pi pi-car").build(),
-            Category.builder().name("Animaux").description("Pet food and accessories").icon("pi pi-github").build(),
-            Category.builder().name("Immobilier").description("Houses and apartments").icon("pi pi-building").build(),
-            Category.builder().name("Services").description("Professional and local services").icon("pi pi-briefcase").build()
+            Category.builder().name("Electronics & Computers").description("Laptops, PCs, tablets, and components").icon("lucide:laptop").build(),
+            Category.builder().name("Smartphones & Wearables").description("Phones, smartwatches, and accessories").icon("lucide:smartphone").build(),
+            Category.builder().name("Photography & Video").description("Cameras, lenses, drones, and lighting").icon("lucide:camera").build(),
+            Category.builder().name("Audio & Music").description("Speakers, headphones, DJ gear, instruments").icon("lucide:headphones").build(),
+            Category.builder().name("Gaming Consoles & VR").description("PlayStation, Xbox, Nintendo, VR headsets").icon("lucide:gamepad-2").build(),
+            Category.builder().name("Cars & Vehicles").description("Rental cars, vans, and automotive tools").icon("lucide:car").build(),
+            Category.builder().name("Motorcycles & Scooters").description("Bikes, electric scooters, and gear").icon("lucide:bike").build(),
+            Category.builder().name("Bicycles & Skating").description("Mountain bikes, city cycles, and skateboards").icon("lucide:person-standing").build(),
+            Category.builder().name("Sports & Fitness").description("Gym equipment, camping gear, and surfboards").icon("lucide:dumbbell").build(),
+            Category.builder().name("Tools & DIY").description("Power tools, drills, and construction gear").icon("lucide:hammer").build(),
+            Category.builder().name("Home & Furniture").description("Sofas, tables, and interior decorations").icon("lucide:sofa").build(),
+            Category.builder().name("Appliances").description("Refrigerators, washing machines, microwaves").icon("lucide:refrigerator").build(),
+            Category.builder().name("Fashion & Clothing").description("Dresses, suits, costumes, and accessories").icon("lucide:shirt").build(),
+            Category.builder().name("Jewelry & Watches").description("Luxury watches, rings, and necklaces").icon("lucide:watch").build(),
+            Category.builder().name("Kids & Baby").description("Toys, strollers, car seats, and cribs").icon("lucide:baby").build(),
+            Category.builder().name("Party & Events").description("Tents, catering equipment, and decorations").icon("lucide:tent").build(),
+            Category.builder().name("Books & Education").description("Textbooks, encyclopedias, and supplies").icon("lucide:book-open").build(),
+            Category.builder().name("Medical & Health").description("Wheelchairs, crutches, and monitors").icon("lucide:stethoscope").build(),
+            Category.builder().name("Real Estate").description("Apartments, workspaces, and venues").icon("lucide:building").build(),
+            Category.builder().name("Services & Other").description("Freelancers, heavy machinery, and miscellaneous").icon("lucide:briefcase").build()
         );
 
-        categories.forEach(category -> {
-            if (categoryRepository.findByName(category.getName()).isEmpty()) {
-                categoryRepository.save(category);
-                log.info("Created category: {}", category.getName());
-            }
+        categories.forEach(newCat -> {
+            categoryRepository.findByName(newCat.getName()).ifPresentOrElse(
+                existingCat -> {
+                    // Update existing to ensure correct lucide icons and descriptions
+                    existingCat.setIcon(newCat.getIcon());
+                    existingCat.setDescription(newCat.getDescription());
+                    categoryRepository.save(existingCat);
+                    log.info("Updated existing category: {}", existingCat.getName());
+                },
+                () -> {
+                    categoryRepository.save(newCat);
+                    log.info("Created new category: {}", newCat.getName());
+                }
+            );
         });
     }
+  
 }

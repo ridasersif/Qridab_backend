@@ -58,10 +58,15 @@ public class ItemController {
     }
 
     @GetMapping
-    @Operation(summary = "Get all items", description = "Retrieves a list of all publicly available items.")
+    @Operation(summary = "Get all items (Paginated)", description = "Retrieves a paginated list of all publicly available items.")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Items fetched successfully")
-    public ResponseEntity<ApiResponse<List<ItemResponse>>> getAllItems() {
-        return ResponseBuilder.success("Items fetched successfully", itemService.getAllItems());
+    public ResponseEntity<ApiResponse<com.qridaba.qridabaplatform.model.dto.response.PaginatedResponse<ItemResponse>>> getAllItems(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "8", required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir
+    ) {
+        return ResponseBuilder.success("Items fetched successfully", itemService.getAllItems(pageNo, pageSize, sortBy, sortDir));
     }
 
     @GetMapping("/search")
@@ -77,6 +82,15 @@ public class ItemController {
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Category not found")
     public ResponseEntity<ApiResponse<List<ItemResponse>>> getItemsByCategory(@PathVariable UUID categoryId) {
         return ResponseBuilder.success("Items fetched successfully", itemService.getItemsByCategory(categoryId));
+    }
+
+    @GetMapping("/my-items")
+    @PreAuthorize("hasAuthority('OWNER')")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Get my items", description = "Retrieves a list of items belonging to the authenticated owner.")
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Items fetched successfully")
+    public ResponseEntity<ApiResponse<List<ItemResponse>>> getMyItems(@AuthenticationPrincipal User user) {
+        return ResponseBuilder.success("Items fetched successfully", itemService.getItemsByOwner(user.getId()));
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -101,7 +115,7 @@ public class ItemController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('OWNER')")
+    @PreAuthorize("hasAnyAuthority('OWNER', 'ADMIN')")
     @Operation(summary = "Delete an item", description = "Permanently removes an item. The authenticated user must be the owner of the item. Requires Owner authority.")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Item deleted successfully")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Access denied (user is not the owner)")

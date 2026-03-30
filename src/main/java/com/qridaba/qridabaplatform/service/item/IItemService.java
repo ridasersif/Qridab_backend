@@ -2,6 +2,7 @@ package com.qridaba.qridabaplatform.service.item;
 
 import com.qridaba.qridabaplatform.model.dto.request.ItemRequest;
 import com.qridaba.qridabaplatform.model.dto.response.ItemResponse;
+import com.qridaba.qridabaplatform.model.dto.response.PaginatedResponse;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.UUID;
@@ -11,7 +12,7 @@ public interface IItemService {
 
     ItemResponse getItemById(UUID id);
 
-    List<ItemResponse> getAllItems();
+    PaginatedResponse<ItemResponse> getAllItems(int pageNo, int pageSize, String sortBy, String sortDir);
 
     List<ItemResponse> searchItemsByTitle(String title);
 
