@@ -25,7 +25,7 @@ public class ItemRequest {
     private Double pricePerDay;
 
     private Double deposit;
-    private Integer minRentalDays;
+
     private String city;
     private Double latitude;
     private Double longitude;

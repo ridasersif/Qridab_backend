@@ -13,4 +13,6 @@ public interface BookingService {
     List<LocalDateTime[]> getUnavailableDates(UUID itemId);
 
     BookingResponse updateBookingStatus(UUID bookingId, String status, String userEmail);
+
+    List<BookingResponse> getBookingsForOwner(String userEmail);
 }

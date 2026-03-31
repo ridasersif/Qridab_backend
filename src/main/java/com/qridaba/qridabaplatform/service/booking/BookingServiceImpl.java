@@ -59,11 +59,8 @@ public class BookingServiceImpl implements BookingService {
             throw new IllegalArgumentException("Item is currently not available for rent generally.");
         }
 
-        // Check min rental days
-        long daysBetween = ChronoUnit.DAYS.between(request.getStartDate(), request.getEndDate());
-        if (item.getMinRentalDays() != null && daysBetween < item.getMinRentalDays()) {
-            throw new IllegalArgumentException("Minimum rental days for this item is " + item.getMinRentalDays());
-        }
+        // Calculate calendar days
+        long calendarDays = ChronoUnit.DAYS.between(request.getStartDate().toLocalDate(), request.getEndDate().toLocalDate()) + 1;
 
         // Check overlaps
         List<BookingStatus> activeStatuses = Arrays.asList(BookingStatus.PENDING, BookingStatus.ACCEPTED);
@@ -77,7 +74,7 @@ public class BookingServiceImpl implements BookingService {
         // Calculate price
         double totalPrice = 0.0;
         if (item.getPricePerDay() != null) {
-            long billableDays = Math.max(1, daysBetween);
+            long billableDays = Math.max(1, calendarDays);
             totalPrice = item.getPricePerDay() * billableDays;
         }
 
@@ -190,5 +187,16 @@ public class BookingServiceImpl implements BookingService {
         }
 
         return bookingMapper.toResponse(savedBooking);
+    }
+
+    @Override
+    public List<BookingResponse> getBookingsForOwner(String userEmail) {
+        User owner = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userEmail));
+        
+        List<Booking> bookings = bookingRepository.findByItemOwnerId(owner.getId());
+        return bookings.stream()
+                .map(bookingMapper::toResponse)
+                .collect(Collectors.toList());
     }
 }

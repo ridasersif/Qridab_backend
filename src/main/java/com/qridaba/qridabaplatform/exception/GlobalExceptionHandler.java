@@ -128,4 +128,10 @@ public class GlobalExceptionHandler {
     }
 
 
+    // === Illegal Argument (400 Bad Request)
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex, WebRequest request) {
+        ErrorResponse errorResponse = buildErrorResponse(ex, HttpStatus.BAD_REQUEST, request);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
 }

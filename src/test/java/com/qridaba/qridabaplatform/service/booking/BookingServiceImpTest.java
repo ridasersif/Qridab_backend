@@ -78,7 +78,6 @@ class BookingServiceImpTest {
         item.setOwner(owner);
         item.setAvailable(true);
         item.setPricePerDay(100.0);
-        item.setMinRentalDays(1);
         item.setTitle("Test Item");
 
         bookingRequest = new BookingRequest();

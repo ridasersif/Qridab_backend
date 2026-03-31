@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/bookings")
+@RequestMapping("/bookings")
 @RequiredArgsConstructor
 @Tag(name = "Booking Controller", description = "Endpoints for managing item reservations")
 public class BookingController {
@@ -57,5 +57,15 @@ public class BookingController {
 
         BookingResponse response = bookingService.updateBookingStatus(bookingId, status, userDetails.getUsername());
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/owner")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Get bookings for owner's items", description = "Returns a list of all bookings placed on items owned by the authenticated owner")
+    public ResponseEntity<List<BookingResponse>> getOwnerBookings(
+            @AuthenticationPrincipal UserDetails userDetails) {
+        
+        List<BookingResponse> responses = bookingService.getBookingsForOwner(userDetails.getUsername());
+        return ResponseEntity.ok(responses);
     }
 }

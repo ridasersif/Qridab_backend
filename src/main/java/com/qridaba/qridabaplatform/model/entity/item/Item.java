@@ -25,7 +25,6 @@ public class Item extends BaseEntity {
 
     private Double pricePerDay;
     private Double deposit;
-    private Integer minRentalDays;
     private String city;
 
     private Double latitude;

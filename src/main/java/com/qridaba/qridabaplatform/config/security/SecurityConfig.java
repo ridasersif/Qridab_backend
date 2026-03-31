@@ -78,8 +78,8 @@ public class SecurityConfig {
         public CorsConfigurationSource corsConfigurationSource() {
                 CorsConfiguration configuration = new CorsConfiguration();
 
-                // Autoriser Angular (localhost:4200)
-                configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+                // Autoriser n'importe quelle adresse pour le dev
+                configuration.setAllowedOriginPatterns(Arrays.asList("*"));
 
                 // Autoriser les méthodes HTTP
                 configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
