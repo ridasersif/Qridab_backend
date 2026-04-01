@@ -51,14 +51,13 @@ class NotificationServiceImplTest {
         recipient.setEmail(email);
 
         notification = Notification.builder()
-                .id(notificationId)
                 .recipient(recipient)
                 .title("Test Notification")
                 .message("Test Message")
                 .type(NotificationType.SYSTEM_ALERT)
                 .referenceId("ref123")
-                .isRead(false)
                 .build();
+        notification.setId(notificationId);
 
         notificationResponse = new NotificationResponse();
         notificationResponse.setId(notificationId);
