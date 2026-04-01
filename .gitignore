@@ -35,3 +35,8 @@ logs/
 .vscode/
 /Archetecture.tex
 uploads/
+test_results.txt
+test_results2.txt
+test_run_final.txt
+
+
