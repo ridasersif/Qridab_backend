@@ -1,11 +1,3 @@
-# FROM eclipse-temurin:17-jdk
-# WORKDIR /app
-# COPY target/qridaba-platform-0.0.1-SNAPSHOT.jar app.jar
-# EXPOSE 8080
-# ENTRYPOINT ["java", "-jar", "app.jar"]
-
-
-
 # Stage 1: Build the application
 FROM maven:3.9-eclipse-temurin-17 AS build
 
@@ -20,7 +12,6 @@ COPY src ./src
 
 # Build the application
 RUN mvn clean package -Dmaven.test.skip=true
-
 
 # Stage 2: Create the runtime image
 FROM eclipse-temurin:17-jdk

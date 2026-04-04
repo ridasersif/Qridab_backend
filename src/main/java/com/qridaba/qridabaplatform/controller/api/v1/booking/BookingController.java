@@ -1,4 +1,4 @@
-package com.qridaba.qridabaplatform.controller.api.booking;
+package com.qridaba.qridabaplatform.controller.api.v1.booking;
 
 import com.qridaba.qridabaplatform.model.dto.request.booking.BookingRequest;
 import com.qridaba.qridabaplatform.model.dto.response.booking.BookingResponse;
